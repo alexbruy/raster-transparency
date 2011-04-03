@@ -41,8 +41,6 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
 
     self.plugin = plugin
 
-    self.manageGui()
-
     # connect signals and slots
     QObject.connect( self.sliderStart, SIGNAL( "valueChanged( int )" ), self.__updateSpinStart )
     QObject.connect( self.spinStart, SIGNAL( "valueChanged( int )" ), self.__updateSliderStart )
@@ -51,18 +49,18 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     QObject.connect( self.sliderStart, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
     QObject.connect( self.sliderEnd, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
 
-  def manageGui( self ):
-    pass
-
   def updateRasterTransparency( self ):
     transparencyList = []
-    for v in range( 0, self.sliderStart.value() + 1 ):
-      tr = QgsRasterTransparency.TransparentSingleValuePixel()
-      tr.pixelValue = v
-      tr.percentTransparent = 100
-      transparencyList.append( tr )
+
+    if self.sliderStart.value() != 0:
+      transparencyList.extend( self.generateTransparencyList( 0, self.sliderStart.value() ) )
+
+    if self.sliderEnd.value() != self.max:
+      transparencyList.extend( self.generateTransparencyList( self.sliderEnd.value(), self.max ) )
+
     # update layer transparency
     layer = self.plugin.iface.mapCanvas().currentLayer()
+    layer.setCacheImage( None )
     layer.rasterTransparency().setTransparentSingleValuePixelList( transparencyList )
     self.plugin.iface.mapCanvas().refresh()
 
@@ -122,3 +120,12 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.sliderEnd.setMinimum( 0 )
     self.sliderEnd.setMaximum( self.max )
     self.sliderEnd.setValue( self.max )
+
+  def generateTransparencyList( self, min, max ):
+    trList = []
+    for v in range( min, max + 1 ):
+      tr = QgsRasterTransparency.TransparentSingleValuePixel()
+      tr.pixelValue = v
+      tr.percentTransparent = 100
+      trList.append( tr )
+    return trList

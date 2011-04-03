@@ -106,7 +106,7 @@ class RasterTransparencyPlugin( object ):
       self.dockWidget.disableOrEnableControls( False )
       return
 
-    # calculate statistics
+    # get maximum value from raster statistics
     stat = self.layer.bandStatistics( 1 )
     maxValue = stat.maximumValue
     self.dockWidget.updateSliders( maxValue )
