@@ -40,12 +40,19 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.setAllowedAreas( Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea )
 
     self.plugin = plugin
-    self.layerRegistry = QgsMapLayerRegistry.instance()
+
+    self.manageGui()
 
     # connect signals and slots
-    QObject.connect( self.slider, SIGNAL( "valueChanged( int )" ), self.__updateSpin )
-    QObject.connect( self.spinBox, SIGNAL( "valueChanged( int )" ), self.__updateSlider )
-    QObject.connect( self.slider, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+    QObject.connect( self.sliderStart, SIGNAL( "valueChanged( int )" ), self.__updateSpinStart )
+    QObject.connect( self.spinStart, SIGNAL( "valueChanged( int )" ), self.__updateSliderStart )
+    QObject.connect( self.sliderEnd, SIGNAL( "valueChanged( int )" ), self.__updateSpinEnd )
+    QObject.connect( self.spinEnd, SIGNAL( "valueChanged( int )" ), self.__updateSliderEnd )
+    QObject.connect( self.sliderStart, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+    QObject.connect( self.sliderEnd, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+
+  def manageGui( self ):
+    pass
 
   def updateRasterTransparency( self ):
     transparencyList = []
@@ -59,9 +66,27 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     layer.rasterTransparency().setTransparentSingleValuePixelList( transparencyList )
     self.plugin.iface.mapCanvas().refresh()
 
-  def __updateSpin( self, value ):
-    self.spinBox.setValue( value )
+  def __updateSpinStart( self, value ):
+    self.spinStart.setValue( value )
 
-  def __updateSlider( self, value ):
-    self.slider.setValue( value )
+  def __updateSliderStart( self, value ):
+    self.sliderStart.setValue( value )
+
+  def __updateSpinEnd( self, value ):
+    self.spinEnd.setValue( value )
+
+  def __updateSliderEnd( self, value ):
+    self.sliderEnd.setValue( value )
+
+  def disableOrEnableControls( self, disable ):
+    #QMessageBox.warning( None, "DEBUG", "Disable or enable" )
+    self.label.setEnabled( disable )
+    self.sliderStart.setEnabled( disable )
+    self.spinStart.setEnabled( disable )
+    self.label_2.setEnabled( disable )
+    self.sliderEnd.setEnabled( disable )
+    self.spinEnd.setEnabled( disable )
+
+  def setupSliders( self, minValue, maxValue ):
+    pass
 

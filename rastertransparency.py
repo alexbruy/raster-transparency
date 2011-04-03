@@ -69,6 +69,9 @@ class RasterTransparencyPlugin( object ):
     self.iface.addDockWidget( Qt.LeftDockWidgetArea, self.dockWidget )
     QObject.connect( self.dockWidget, SIGNAL( "visibilityChanged( bool )" ), self.__dockVisibilityChanged )
 
+    # track layer changing
+    QObject.connect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
+
   def unload( self ):
     # remove the plugin menu items
     self.iface.removePluginMenu( "Raster Transparency", self.actionDock)
@@ -86,6 +89,30 @@ class RasterTransparencyPlugin( object ):
       self.dockWidget.hide()
     else:
       self.dockWidget.show()
+
+  def layerChanged( self ):
+    self.layer = self.iface.activeLayer()
+
+    if self.layer is None:
+      return
+
+    # disable plugin for vector layers
+    if self.layer.type() == QgsMapLayer.VectorLayer and self.layer.type() != QgsMapLayer.RasterLayer:
+      self.dockWidget.disableOrEnableControls( False )
+      return
+
+    # also disable it for multiband layers
+    if self.layer.bandCount() > 1:
+      self.dockWidget.disableOrEnableControls( False )
+      return
+
+    # calculate statistics
+    stat = self.layer.bandStatistics( 1 )
+    self.maxValue = stat.maximumValue()
+    self.minValue = stat.minimunValue()
+
+
+    self.dockWidget.disableOrEnableControls( True )
 
   def __dockVisibilityChanged( self ):
     if self.dockWidget.isVisible():
