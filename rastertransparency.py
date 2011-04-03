@@ -37,6 +37,11 @@ from __init__ import mVersion
 
 import resources
 
+singleBand = [ QgsRasterLayer.SingleBandGray, QgsRasterLayer.SingleBandPseudoColor, \
+               QgsRasterLayer.PalettedColor, QgsRasterLayer.PalettedSingleBandGray, \
+               QgsRasterLayer.PalettedSingleBandPseudoColor, QgsRasterLayer.MultiBandSingleBandGray, \
+               QgsRasterLayer.MultiBandSingleBandPseudoColor ]
+
 class RasterTransparencyPlugin( object ):
   def __init__( self, iface ):
     self.iface = iface
@@ -145,7 +150,7 @@ class RasterTransparencyPlugin( object ):
       return
 
     # also disable it for multiband layers
-    if self.layer.bandCount() > 1:
+    if self.layer.bandCount() > 1 and self.layer.drawingStyle() not in singleBand:
       self.dockWidget.disableOrEnableControls( False )
       return
 
