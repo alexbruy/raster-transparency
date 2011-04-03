@@ -56,7 +56,7 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
 
   def updateRasterTransparency( self ):
     transparencyList = []
-    for v in range( 0, self.slider.value() + 1 ):
+    for v in range( 0, self.sliderStart.value() + 1 ):
       tr = QgsRasterTransparency.TransparentSingleValuePixel()
       tr.pixelValue = v
       tr.percentTransparent = 100
@@ -67,19 +67,38 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.plugin.iface.mapCanvas().refresh()
 
   def __updateSpinStart( self, value ):
+    endValue = self.sliderEnd.value()
+    if value >= endValue:
+      self.spinStart.setValue( endValue -1 )
+      self.sliderStart.setValue( endValue - 1 )
+      return
     self.spinStart.setValue( value )
 
   def __updateSliderStart( self, value ):
+    endValue = self.spinEnd.value()
+    if value >= endValue:
+      self.spinStart.setValue( endValue -1 )
+      self.sliderStart.setValue( endValue - 1 )
+      return
     self.sliderStart.setValue( value )
 
   def __updateSpinEnd( self, value ):
+    startValue = self.sliderStart.value()
+    if value <= startValue:
+      self.spinEnd.setValue( startValue + 1 )
+      self.sliderEnd.setValue( startValue + 1 )
+      return
     self.spinEnd.setValue( value )
 
   def __updateSliderEnd( self, value ):
+    startValue = self.sliderStart.value()
+    if value <= startValue:
+      self.spinEnd.setValue( startValue + 1 )
+      self.sliderEnd.setValue( startValue + 1 )
+      return
     self.sliderEnd.setValue( value )
 
   def disableOrEnableControls( self, disable ):
-    #QMessageBox.warning( None, "DEBUG", "Disable or enable" )
     self.label.setEnabled( disable )
     self.sliderStart.setEnabled( disable )
     self.spinStart.setEnabled( disable )
@@ -87,6 +106,19 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.sliderEnd.setEnabled( disable )
     self.spinEnd.setEnabled( disable )
 
-  def setupSliders( self, minValue, maxValue ):
-    pass
+  def updateSliders( self, maxValue ):
+    self.max = maxValue
 
+    self.spinStart.setMaximum( self.max )
+    self.spinStart.setValue( 0 )
+
+    self.spinEnd.setMaximum( self.max )
+    self.spinEnd.setValue( self.max )
+
+    self.sliderStart.setMinimum( 0 )
+    self.sliderStart.setMaximum( self.max )
+    self.sliderStart.setValue( 0 )
+
+    self.sliderEnd.setMinimum( 0 )
+    self.sliderEnd.setMaximum( self.max )
+    self.sliderEnd.setValue( self.max )
