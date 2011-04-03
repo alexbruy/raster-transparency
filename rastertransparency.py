@@ -91,8 +91,11 @@ class RasterTransparencyPlugin( object ):
 
     # add plugin to the Raster menu
     self.pluginMenu = QMenu( "Raster Transparency" )
-    self.rasterMenu.insertMenu( calcAction, self.pluginMenu )
     self.pluginMenu.addAction( self.actionDock )
+    if calcAction is None:
+      self.rasterMenu.addMenu( self.pluginMenu )
+    else:
+      self.rasterMenu.insertMenu( calcAction, self.pluginMenu )
 
     # create dockwidget
     self.dockWidget = RasterTransparencyDockWidget( self )
