@@ -56,13 +56,43 @@ class RasterTransparencyPlugin( object ):
     # connect actions to plugin functions
     QObject.connect( self.actionDock, SIGNAL( "triggered()" ), self.showHideDockWidget )
 
-    # create a toolbar
-    self.toolBar = self.iface.addToolBar( "RasterTransparency" )
-    self.toolBar.setObjectName( "RasterTransparency" )
-    self.toolBar.addAction( self.actionDock )
+    # add button to the Raster toolbar
+    self.iface.rasterToolBar().addAction( self.actionDock )
 
-    # populate plugins menu
-    self.iface.addPluginToMenu( "Raster Transparency", self.actionDock)
+    # find the Raster menu
+    rasterMenu = None
+    menuBar = self.iface.mainWindow().menuBar()
+    actions = menuBar.actions()
+    rasterText = QCoreApplication.translate( "QgisApp", "&Raster" )
+
+    for a in actions:
+      if a.menu() != None and a.menu().title() == rasterText:
+        rasterMenu = a.menu()
+        break
+
+    if rasterMenu == None:
+      # no Raster menu, create and insert it before the Help menu
+      self.rasterMenu = QMenu()
+      self.rasterMenu.setTitle( rasterText )
+      lastAction = actions[ len( actions ) - 1 ]
+      menuBar.insertMenu( lastAction, self.menu )
+    else:
+      self.rasterMenu = rasterMenu
+      #self.rasterMenu.addSeparator()
+
+    calcAction = None
+    i = 0
+    calcText = QCoreApplication.translate( "QgisApp", "Raster calculator ..." )
+    for a in self.rasterMenu.actions():
+      if a.text() == calcText:
+        calcAction = self.rasterMenu.actions()[ i + 1]
+        break
+      i += 1
+
+    # add plugin to the Raster menu
+    self.pluginMenu = QMenu( "Raster Transparency" )
+    self.rasterMenu.insertMenu( calcAction, self.pluginMenu )
+    self.pluginMenu.addAction( self.actionDock )
 
     # create dockwidget
     self.dockWidget = RasterTransparencyDockWidget( self )
@@ -74,15 +104,16 @@ class RasterTransparencyPlugin( object ):
 
   def unload( self ):
     # remove the plugin menu items
-    self.iface.removePluginMenu( "Raster Transparency", self.actionDock)
+    self.pluginMenu.removeAction( self.actionDock )
+    self.rasterMenu.removeAction( self.pluginMenu.menuAction() )
 
     # remove dock widget
     self.dockWidget.close()
     del self.dockWidget
     self.dockWidget = None
 
-    # remove toolbar
-    del self.toolBar
+    # remove button
+    self.iface.rasterToolBar().removeAction( self.actionDock )
 
   def showHideDockWidget( self ):
     if self.dockWidget.isVisible():
