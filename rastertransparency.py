@@ -150,7 +150,7 @@ class RasterTransparencyPlugin( object ):
       self.dockWidget.disableOrEnableControls( False )
       return
 
-    # also disable it for multiband layers
+    # also disable it for multiband layers that not in single band style
     if self.layer.bandCount() > 1 and self.layer.drawingStyle() not in singleBandStyles:
       self.dockWidget.disableOrEnableControls( False )
       return
