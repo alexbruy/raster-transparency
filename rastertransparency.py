@@ -60,8 +60,14 @@ class RasterTransparencyPlugin( object ):
     self.actionDock.setWhatsThis( QCoreApplication.translate( "RasterTransparency", "Show/hide RasterTransparency dockwidget" ) )
     self.actionDock.setCheckable( True )
 
+    # create action for display plugin about dialog
+    self.actionAbout = QAction( QIcon( ":/icons/rastertransparency.png" ), "About", self.iface.mainWindow() )
+    self.actionAbout.setStatusTip( QCoreApplication.translate( "RasterTransparency", "About RasterTransparency" ) )
+    self.actionAbout.setWhatsThis( QCoreApplication.translate( "RasterTransparency", "About RasterTransparency" ) )
+
     # connect actions to plugin functions
     QObject.connect( self.actionDock, SIGNAL( "triggered()" ), self.showHideDockWidget )
+    QObject.connect( self.actionAbout, SIGNAL( "triggered()" ), self.about )
 
     # add button to the Raster toolbar
     try:
@@ -104,6 +110,7 @@ class RasterTransparencyPlugin( object ):
     # add plugin to the Raster menu
     self.pluginMenu = QMenu( "Raster Transparency" )
     self.pluginMenu.addAction( self.actionDock )
+    self.pluginMenu.addAction( self.actionAbout )
     if calcAction is None:
       self.rasterMenu.addMenu( self.pluginMenu )
     else:
@@ -120,6 +127,7 @@ class RasterTransparencyPlugin( object ):
   def unload( self ):
     # remove the plugin menu items
     self.pluginMenu.removeAction( self.actionDock )
+    self.pluginMenu.removeAction( self.actionAbout )
     self.rasterMenu.removeAction( self.pluginMenu.menuAction() )
 
     # remove dock widget
@@ -161,6 +169,43 @@ class RasterTransparencyPlugin( object ):
     self.dockWidget.updateSliders( maxValue )
 
     self.dockWidget.disableOrEnableControls( True )
+
+  def about( self ):
+    dlgAbout = QDialog()
+    dlgAbout.setWindowTitle( QApplication.translate( "RasterTransparency", "About Raster Transparency", "Window title" ) )
+    lines = QVBoxLayout( dlgAbout )
+    title = QLabel( QApplication.translate( "RasterTransparency", "<b>Raster Transparency</b>" ) )
+    title.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
+    lines.addWidget( title )
+    version = QLabel( QApplication.translate( "RasterTransparency", "Version: %1" ).arg( mVersion ) )
+    version.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
+    lines.addWidget( version )
+    lines.addWidget( QLabel( QApplication.translate( "RasterTransparency", "Change raster transparency interactively" ) ) )
+    lines.addWidget( QLabel( QApplication.translate( "RasterTransparency", "<b>Developers:</b>" ) ) )
+    lines.addWidget( QLabel( "  Alexander Bruy" ) )
+    lines.addWidget( QLabel( "  Maxim Dubinin" ) )
+    lines.addWidget( QLabel( QApplication.translate( "RasterTransparency", "<b>Homepage:</b>") ) )
+
+    overrideLocale = QSettings().value( "locale/overrideFlag", QVariant( False ) ).toBool()
+    if not overrideLocale:
+      localeFullName = QLocale.system().name()
+    else:
+      localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
+
+    localeShortName = localeFullName[ 0:2 ]
+    if localeShortName in [ "ru", "uk" ]:
+      link = QLabel( "<a href=\"http://gis-lab.info/qa/raster-transparency.html\">http://gis-lab.info/qa/raster-transparency.html</a>" )
+    else:
+      link = QLabel( "<a href=\"http://gis-lab.info/qa/raster-transparency.html\">http://gis-lab.info/qa/raster-transparency.html</a>" )
+
+    link.setOpenExternalLinks( True )
+    lines.addWidget( link )
+
+    btnClose = QPushButton( QApplication.translate( "RasterTransparency", "Close" ) )
+    lines.addWidget( btnClose )
+    QObject.connect( btnClose, SIGNAL( "clicked()" ), dlgAbout, SLOT( "close()" ) )
+
+    dlgAbout.exec_()
 
   def __dockVisibilityChanged( self ):
     if self.dockWidget.isVisible():
