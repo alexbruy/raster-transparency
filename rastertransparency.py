@@ -125,6 +125,8 @@ class RasterTransparencyPlugin( object ):
     QObject.connect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
 
   def unload( self ):
+    QObject.disconnect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
+
     # remove the plugin menu items
     self.pluginMenu.removeAction( self.actionDock )
     self.pluginMenu.removeAction( self.actionAbout )
