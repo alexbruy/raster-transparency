@@ -78,7 +78,7 @@ class RasterTransparencyPlugin( object ):
       QCoreApplication.installTranslator( self.translator )
 
   def initGui( self ):
-    if int( self.QgisVersion ) < 10800:
+    if int( self.QgisVersion ) < 10500:
       QMessageBox.warning( self.iface.mainWindow(), "RasterTransparency",
                            QCoreApplication.translate( "RasterTransparency", "Quantum GIS version detected: %1.%2\n" ).arg( self.QgisVersion[ 0 ] ).arg( self.QgisVersion[ 2 ] ) +
                            QCoreApplication.translate( "RasterTransparency", "This version of Raster Transparency requires at least QGIS version 1.5.0\nPlugin will not be enabled." ) )
