@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS>
+<TS version="2.0" language="uk_UA">
 <context>
     <name>QgisApp</name>
     <message>
@@ -30,11 +31,6 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="rastertransparency.py" line="92"/>
         <source>Show/hide RasterTransparency dockwidget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rastertransparency.py" line="98"/>
-        <source>About RasterTransparency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -71,6 +67,11 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="rastertransparency.py" line="236"/>
         <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="rastertransparency.py" line="98"/>
+        <source>About Raster Transparency</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

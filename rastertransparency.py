@@ -94,8 +94,8 @@ class RasterTransparencyPlugin( object ):
 
     # create action for display plugin about dialog
     self.actionAbout = QAction( QIcon( ":/icons/rastertransparency.png" ), "About", self.iface.mainWindow() )
-    self.actionAbout.setStatusTip( QCoreApplication.translate( "RasterTransparency", "About RasterTransparency" ) )
-    self.actionAbout.setWhatsThis( QCoreApplication.translate( "RasterTransparency", "About RasterTransparency" ) )
+    self.actionAbout.setStatusTip( QCoreApplication.translate( "RasterTransparency", "About Raster Transparency" ) )
+    self.actionAbout.setWhatsThis( QCoreApplication.translate( "RasterTransparency", "About Raster Transparency" ) )
 
     # connect actions to plugin functions
     QObject.connect( self.actionDock, SIGNAL( "triggered()" ), self.showHideDockWidget )
@@ -134,6 +134,7 @@ class RasterTransparencyPlugin( object ):
     i = 0
     calcText = QCoreApplication.translate( "QgisApp", "Raster calculator ..." )
     for a in self.rasterMenu.actions():
+      print i
       if a.text() == calcText:
         calcAction = self.rasterMenu.actions()[ i + 1]
         break
