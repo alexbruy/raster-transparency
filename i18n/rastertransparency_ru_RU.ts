@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<!DOCTYPE TS><TS version="1.1" language="ru_RU">
 <context>
     <name>QgisApp</name>
     <message>
@@ -36,38 +35,38 @@ Plugin will not be enabled.</source>
         <translation>Скрыть/показать панель Raster Transparency</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="207"/>
+        <location filename="rastertransparency.py" line="208"/>
         <source>About Raster Transparency</source>
         <comment>Window title</comment>
         <translation>О Raster Transparency</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="209"/>
+        <location filename="rastertransparency.py" line="210"/>
         <source>&lt;b&gt;Raster Transparency&lt;/b&gt;</source>
         <translation>&lt;b&gt;Raster Transparency&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="212"/>
+        <location filename="rastertransparency.py" line="213"/>
         <source>Version: %1</source>
         <translation>Версия: %1</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="215"/>
+        <location filename="rastertransparency.py" line="216"/>
         <source>Change raster transparency interactively</source>
         <translation>Интерактивное изменение прозрачности растра</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="216"/>
+        <location filename="rastertransparency.py" line="217"/>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Разработчики:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="219"/>
+        <location filename="rastertransparency.py" line="220"/>
         <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Сайт:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="rastertransparency.py" line="236"/>
+        <location filename="rastertransparency.py" line="237"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>

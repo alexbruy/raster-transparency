@@ -134,9 +134,8 @@ class RasterTransparencyPlugin( object ):
     i = 0
     calcText = QCoreApplication.translate( "QgisApp", "Raster calculator ..." )
     for a in self.rasterMenu.actions():
-      print i
       if a.text() == calcText:
-        calcAction = self.rasterMenu.actions()[ i + 1]
+        calcAction = self.rasterMenu.actions()[ i ]
         break
       i += 1
 
