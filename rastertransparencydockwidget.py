@@ -71,6 +71,7 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
       self.sliderStart.setValue( endValue - 1 )
       return
     self.spinStart.setValue( value )
+    self.updateRasterTransparency()
 
   def __updateSliderStart( self, value ):
     endValue = self.spinEnd.value()
@@ -87,6 +88,7 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
       self.sliderEnd.setValue( startValue + 1 )
       return
     self.spinEnd.setValue( value )
+    self.updateRasterTransparency()
 
   def __updateSliderEnd( self, value ):
     startValue = self.sliderStart.value()
