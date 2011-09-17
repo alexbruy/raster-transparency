@@ -125,7 +125,7 @@ class RasterTransparencyPlugin( object ):
       self.rasterMenu = QMenu()
       self.rasterMenu.setTitle( rasterText )
       lastAction = actions[ len( actions ) - 1 ]
-      menuBar.insertMenu( lastAction, self.menu )
+      menuBar.insertMenu( lastAction, self.rasterMenu )
     else:
       self.rasterMenu = rasterMenu
       #self.rasterMenu.addSeparator()
