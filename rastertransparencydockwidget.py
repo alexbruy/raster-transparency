@@ -55,8 +55,8 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     if self.sliderStart.value() != 0:
       transparencyList.extend( self.generateTransparencyList( 0, self.sliderStart.value() ) )
 
-    if self.sliderEnd.value() != self.max:
-      transparencyList.extend( self.generateTransparencyList( self.sliderEnd.value(), self.max ) )
+    if self.sliderEnd.value() != self.maxVal:
+      transparencyList.extend( self.generateTransparencyList( self.sliderEnd.value(), self.maxVal ) )
 
     # update layer transparency
     layer = self.plugin.iface.mapCanvas().currentLayer()
@@ -107,25 +107,25 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.spinEnd.setEnabled( disable )
 
   def updateSliders( self, maxValue ):
-    self.max = maxValue
+    self.maxVal = maxValue
 
-    self.spinStart.setMaximum( self.max )
+    self.spinStart.setMaximum( self.maxVal )
     self.spinStart.setValue( 0 )
 
-    self.spinEnd.setMaximum( self.max )
-    self.spinEnd.setValue( self.max )
+    self.spinEnd.setMaximum( self.maxVal )
+    self.spinEnd.setValue( self.maxVal )
 
     self.sliderStart.setMinimum( 0 )
-    self.sliderStart.setMaximum( self.max )
+    self.sliderStart.setMaximum( self.maxVal )
     self.sliderStart.setValue( 0 )
 
     self.sliderEnd.setMinimum( 0 )
-    self.sliderEnd.setMaximum( self.max )
-    self.sliderEnd.setValue( self.max )
+    self.sliderEnd.setMaximum( self.maxVal )
+    self.sliderEnd.setValue( self.maxVal )
 
-  def generateTransparencyList( self, min, max ):
+  def generateTransparencyList( self, minVal, maxVal ):
     trList = []
-    for v in range( min, max + 1 ):
+    for v in range( int( minVal ), int( maxVal + 1 ) ):
       tr = QgsRasterTransparency.TransparentSingleValuePixel()
       tr.pixelValue = v
       tr.percentTransparent = 100
