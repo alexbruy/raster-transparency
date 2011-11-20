@@ -93,7 +93,7 @@ class RasterTransparencyPlugin( object ):
     self.actionDock.setCheckable( True )
 
     # create action for display plugin about dialog
-    self.actionAbout = QAction( QIcon( ":/icons/rastertransparency.png" ), "About", self.iface.mainWindow() )
+    self.actionAbout = QAction( QIcon( ":/icons/about.png" ), "About", self.iface.mainWindow() )
     self.actionAbout.setStatusTip( QCoreApplication.translate( "RasterTransparency", "About Raster Transparency" ) )
     self.actionAbout.setWhatsThis( QCoreApplication.translate( "RasterTransparency", "About Raster Transparency" ) )
 
