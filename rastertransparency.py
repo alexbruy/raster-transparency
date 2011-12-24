@@ -102,52 +102,15 @@ class RasterTransparencyPlugin( object ):
     QObject.connect( self.actionAbout, SIGNAL( "triggered()" ), self.about )
 
     # add button to the Raster toolbar
-    try:
-      self.iface.rasterToolBar().addAction( self.actionDock )
-    except AttributeError:
-      self.toolBar = self.iface.addToolBar( "Raster" )
-      self.toolBar.setObjectName( "Raster" )
-      self.toolBar.addAction( self.actionDock )
-
-    # find the Raster menu
-    rasterMenu = None
-    menuBar = self.iface.mainWindow().menuBar()
-    actions = menuBar.actions()
-    rasterText = QCoreApplication.translate( "QgisApp", "&Raster" )
-
-    for a in actions:
-      if a.menu() != None and a.menu().title() == rasterText:
-        rasterMenu = a.menu()
-        break
-
-    if rasterMenu == None:
-      # no Raster menu, create and insert it before the Help menu
-      self.rasterMenu = QMenu()
-      self.rasterMenu.setTitle( rasterText )
-      lastAction = actions[ len( actions ) - 1 ]
-      menuBar.insertMenu( lastAction, self.rasterMenu )
+    if hasattr( self.iface, "addPluginToRasterMenu" ):
+      self.iface.addRasterToolBarIcon( self.actionDock )
+      self.iface.addPluginToRasterMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
+      self.iface.addPluginToRasterMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
     else:
-      self.rasterMenu = rasterMenu
-      #self.rasterMenu.addSeparator()
-
-    calcAction = None
-    i = 0
-    calcText = QCoreApplication.translate( "QgisApp", "Raster calculator ..." )
-    for a in self.rasterMenu.actions():
-      if a.text() == calcText:
-        calcAction = self.rasterMenu.actions()[ i ]
-        break
-      i += 1
-
-    # add plugin to the Raster menu
-    self.pluginMenu = QMenu( "Raster Transparency" )
-    self.pluginMenu.addAction( self.actionDock )
-    self.pluginMenu.addAction( self.actionAbout )
-    if calcAction is None:
-      self.rasterMenu.addMenu( self.pluginMenu )
-    else:
-      self.rasterMenu.insertMenu( calcAction, self.pluginMenu )
-
+      self.iface.addToolBarIcon( self.actionDock )
+      self.iface.addPluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
+      self.iface.addPluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
+      
     # create dockwidget
     self.dockWidget = RasterTransparencyDockWidget( self )
     self.iface.addDockWidget( Qt.LeftDockWidgetArea, self.dockWidget )
@@ -159,21 +122,19 @@ class RasterTransparencyPlugin( object ):
   def unload( self ):
     QObject.disconnect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
 
-    # remove the plugin menu items
-    self.pluginMenu.removeAction( self.actionDock )
-    self.pluginMenu.removeAction( self.actionAbout )
-    self.rasterMenu.removeAction( self.pluginMenu.menuAction() )
+    if hasattr( self.iface, "addPluginToRasterMenu" ):
+      self.iface.removeRasterToolBarIcon( self.actionDock )
+      self.iface.removePluginRasterMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
+      self.iface.removePluginRasterMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
+    else:
+      self.iface.removeToolBarIcon( self.actionDock )
+      self.iface.removePluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
+      self.iface.removePluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
 
     # remove dock widget
     self.dockWidget.close()
     del self.dockWidget
     self.dockWidget = None
-
-    # remove button
-    if self.toolBar is None:
-      self.iface.rasterToolBar().removeAction( self.actionDock )
-    else:
-      del self.toolBar
 
   def showHideDockWidget( self ):
     if self.dockWidget.isVisible():
