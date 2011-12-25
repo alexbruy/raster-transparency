@@ -40,6 +40,7 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.setAllowedAreas( Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea )
 
     self.plugin = plugin
+    self.maxVal = 0
 
     # connect signals and slots
     QObject.connect( self.sliderStart, SIGNAL( "valueChanged( int )" ), self.__updateSpinStart )
