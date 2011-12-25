@@ -118,6 +118,7 @@ class RasterTransparencyPlugin( object ):
 
     # track layer changing
     QObject.connect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
+    self.layerChanged()
 
   def unload( self ):
     QObject.disconnect( self.iface, SIGNAL( "currentLayerChanged( QgsMapLayer* )" ), self.layerChanged )
