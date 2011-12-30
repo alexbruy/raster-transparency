@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-mVersion = "0.1.9"
+mVersion = "0.1.10"
 #******************************************************************************
 #
 # RasterTransparency
@@ -27,26 +27,26 @@ mVersion = "0.1.9"
 #******************************************************************************
 
 def name():
-    return "Raster Transparency"
+  return "Raster Transparency"
 
 def description():
-    return "Change raster transparency interactively"
+  return "Change raster transparency interactively"
 
 def category():
-	return "Raster"
+  return "Raster"
 
 def version():
-    return mVersion
+  return mVersion
 
 def qgisMinimumVersion():
-    return "1.5"
+  return "1.5"
 
 def authorName():
-    return "Alexander Bruy"
+  return "Alexander Bruy"
 
 def icon():
-    return "icons/rastertransparency.png"
+  return "icons/rastertransparency.png"
 
 def classFactory( iface ):
-    from rastertransparency import RasterTransparencyPlugin
-    return RasterTransparencyPlugin( iface )
+  from rastertransparency import RasterTransparencyPlugin
+  return RasterTransparencyPlugin( iface )
