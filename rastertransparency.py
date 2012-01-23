@@ -129,8 +129,8 @@ class RasterTransparencyPlugin( object ):
       self.iface.removePluginRasterMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
     else:
       self.iface.removeToolBarIcon( self.actionDock )
-      self.iface.removePluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
-      self.iface.removePluginToMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
+      self.iface.removePluginMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionDock )
+      self.iface.removePluginMenu( QCoreApplication.translate( "RasterTransparency", "Raster transparency" ), self.actionAbout )
 
     # remove dock widget
     self.dockWidget.close()
