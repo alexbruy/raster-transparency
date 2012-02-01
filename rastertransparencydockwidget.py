@@ -41,14 +41,19 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
 
     self.plugin = plugin
     self.maxVal = 0
+    self.minVal = 0
 
     # connect signals and slots
+    QObject.connect( self.chkManualUpdate, SIGNAL( "stateChanged( int )" ), self.__toggleRefresh )
+    QObject.connect( self.btnRefresh, SIGNAL( "clicked()" ), self.updateRasterTransparency )
+
     QObject.connect( self.sliderStart, SIGNAL( "valueChanged( int )" ), self.__updateSpinStart )
     QObject.connect( self.spinStart, SIGNAL( "valueChanged( int )" ), self.__updateSliderStart )
     QObject.connect( self.sliderEnd, SIGNAL( "valueChanged( int )" ), self.__updateSpinEnd )
     QObject.connect( self.spinEnd, SIGNAL( "valueChanged( int )" ), self.__updateSliderEnd )
-    QObject.connect( self.sliderStart, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
-    QObject.connect( self.sliderEnd, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+
+    settings = QSettings( "NextGIS", "RasterTransparency" )
+    self.chkManualUpdate.setChecked( settings.value( "manualUpdate", False ).toBool() )
 
   def updateRasterTransparency( self ):
     transparencyList = []
@@ -72,7 +77,9 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
       self.sliderStart.setValue( endValue - 1 )
       return
     self.spinStart.setValue( value )
-    self.updateRasterTransparency()
+
+    if not self.chkManualUpdate.isChecked():
+      self.updateRasterTransparency()
 
   def __updateSliderStart( self, value ):
     endValue = self.spinEnd.value()
@@ -89,7 +96,9 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
       self.sliderEnd.setValue( startValue + 1 )
       return
     self.spinEnd.setValue( value )
-    self.updateRasterTransparency()
+
+    if not self.chkManualUpdate.isChecked():
+      self.updateRasterTransparency()
 
   def __updateSliderEnd( self, value ):
     startValue = self.sliderStart.value()
@@ -99,6 +108,19 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
       return
     self.sliderEnd.setValue( value )
 
+  def __toggleRefresh( self ):
+    settings = QSettings( "NextGIS", "RasterTransparency" )
+    settings.setValue( "manualUpdate", self.chkManualUpdate.isChecked() )
+
+    if self.chkManualUpdate.isChecked():
+      self.btnRefresh.setEnabled( True )
+      QObject.disconnect( self.sliderStart, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+      QObject.disconnect( self.sliderEnd, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+    else:
+      self.btnRefresh.setEnabled( False )
+      QObject.connect( self.sliderStart, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+      QObject.connect( self.sliderEnd, SIGNAL( "sliderReleased ()" ), self.updateRasterTransparency )
+
   def disableOrEnableControls( self, disable ):
     self.label.setEnabled( disable )
     self.sliderStart.setEnabled( disable )
@@ -107,20 +129,23 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.sliderEnd.setEnabled( disable )
     self.spinEnd.setEnabled( disable )
 
-  def updateSliders( self, maxValue ):
+  def updateSliders( self, maxValue, minValue ):
     self.maxVal = maxValue
+    self.minVal = minValue
 
     self.spinStart.setMaximum( self.maxVal )
-    self.spinStart.setValue( 0 )
+    self.spinStart.setMinimum( self.minVal )
+    self.spinStart.setValue( self.minVal )
 
     self.spinEnd.setMaximum( self.maxVal )
+    self.spinEnd.setMinimum( self.minVal )
     self.spinEnd.setValue( self.maxVal )
 
-    self.sliderStart.setMinimum( 0 )
+    self.sliderStart.setMinimum( self.minVal )
     self.sliderStart.setMaximum( self.maxVal )
-    self.sliderStart.setValue( 0 )
+    self.sliderStart.setValue( self.minVal )
 
-    self.sliderEnd.setMinimum( 0 )
+    self.sliderEnd.setMinimum( self.minVal )
     self.sliderEnd.setMaximum( self.maxVal )
     self.sliderEnd.setValue( self.maxVal )
 

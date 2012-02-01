@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>302</width>
-    <height>140</height>
+    <height>182</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,6 +67,24 @@
       </item>
       <item>
        <widget class="QSpinBox" name="spinEnd"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QCheckBox" name="chkManualUpdate">
+        <property name="text">
+         <string>Manual update</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnRefresh">
+        <property name="text">
+         <string>Refresh</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

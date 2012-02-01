@@ -162,7 +162,8 @@ class RasterTransparencyPlugin( object ):
     # get maximum value from raster statistics
     stat = self.layer.bandStatistics( self.layer.grayBandName() )
     maxValue = int( stat.maximumValue )
-    self.dockWidget.updateSliders( maxValue )
+    minValue = int( stat.minimumValue )
+    self.dockWidget.updateSliders( maxValue, minValue )
 
     self.dockWidget.disableOrEnableControls( True )
 
