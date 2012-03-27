@@ -44,4 +44,4 @@ package:
 	mv ../raster_transparency.zip .
 
 upload:
-	plugin_uploader.py qconsolidate.experimental.zip
+	plugin_uploader.py raster_tranparency.zip
