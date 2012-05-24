@@ -40,7 +40,7 @@ clean:
 	rm -f *.pyc
 
 package:
-	cd .. && rm -f *.zip && zip -r raster_transparency.zip raster_transparency -x \*.pyc -x \*~ -x \*.git\*
+	cd .. && rm -f *.zip && zip -r raster_transparency.zip raster_transparency -x \*.pyc \*.ts \*.ui \*.qrc \*.pro \*~ \*.git\* \*Makefile*
 	mv ../raster_transparency.zip .
 
 upload:

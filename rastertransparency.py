@@ -35,7 +35,7 @@ from rastertransparencydockwidget import *
 
 from __init__ import mVersion
 
-import resources
+import resources_rc
 
 singleBandStyles = [ QgsRasterLayer.SingleBandGray, QgsRasterLayer.SingleBandPseudoColor, \
                      QgsRasterLayer.PalettedColor, QgsRasterLayer.PalettedSingleBandGray, \

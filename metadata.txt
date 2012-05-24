@@ -2,7 +2,7 @@
 name = Raster Transparency
 description = Change raster transparency interactively
 category = Raster
-version = 0.1.13
+version = 0.1.14
 qgisMinimumVersion = 1.5.0
 
 icon = icons/rastertransparency.png

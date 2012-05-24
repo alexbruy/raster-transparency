@@ -31,7 +31,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from rastertransparencydockwidgetbase import Ui_RasterTransparencyDockWidget
+from ui_rastertransparencydockwidgetbase import Ui_RasterTransparencyDockWidget
 
 class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget, object ):
   def __init__( self, plugin ):
@@ -130,24 +130,24 @@ class RasterTransparencyDockWidget( QDockWidget, Ui_RasterTransparencyDockWidget
     self.spinEnd.setEnabled( disable )
 
   def updateSliders( self, maxValue, minValue ):
-    self.maxVal = maxValue
-    self.minVal = minValue
+    self.maxVal = int( maxValue )
+    self.minVal = int( minValue )
 
-    self.spinStart.setMaximum( self.maxVal )
-    self.spinStart.setMinimum( self.minVal )
-    self.spinStart.setValue( self.minVal )
+    self.spinStart.setMaximum( int( self.maxVal ) )
+    self.spinStart.setMinimum( int( self.minVal ) )
+    self.spinStart.setValue( int( self.minVal ) )
 
-    self.spinEnd.setMaximum( self.maxVal )
-    self.spinEnd.setMinimum( self.minVal )
-    self.spinEnd.setValue( self.maxVal )
+    self.spinEnd.setMaximum( int( self.maxVal ) )
+    self.spinEnd.setMinimum( int( self.minVal ) )
+    self.spinEnd.setValue( int( self.maxVal ) )
 
-    self.sliderStart.setMinimum( self.minVal )
-    self.sliderStart.setMaximum( self.maxVal )
-    self.sliderStart.setValue( self.minVal )
+    self.sliderStart.setMinimum( int( self.minVal ) )
+    self.sliderStart.setMaximum( int( self.maxVal ) )
+    self.sliderStart.setValue( int( self.minVal ) )
 
-    self.sliderEnd.setMinimum( self.minVal )
-    self.sliderEnd.setMaximum( self.maxVal )
-    self.sliderEnd.setValue( self.maxVal )
+    self.sliderEnd.setMinimum( int( self.minVal ) )
+    self.sliderEnd.setMaximum( int( self.maxVal ) )
+    self.sliderEnd.setValue( int( self.maxVal ) )
 
   def generateTransparencyList( self, minVal, maxVal ):
     trList = []
