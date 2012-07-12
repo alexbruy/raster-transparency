@@ -45,4 +45,4 @@ package:
 	mv ../raster_transparency.zip .
 
 upload:
-	plugin_uploader.py raster_tranparency.zip
+	plugin_uploader.py raster_transparency.zip
