@@ -12,8 +12,8 @@ authorName = Alexander Bruy (NextGIS)
 tags = raster, transparency
 
 homepage = http://gis-lab.info/qa/raster-transparency.html
-tracker =
-repository =
+tracker = http://hub.qgis.org/projects/raster-transparency
+repository = http://svn.gis-lab.info/raster_transparency
 
 experimental = False
 deprecated = False
