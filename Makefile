@@ -38,6 +38,7 @@ $(RES_FILES): $(RES_PATH)/%_rc.py: $(RES_PATH)/%.qrc
 clean:
 	rm -f $(ALL_FILES)
 	rm -f *.pyc
+	rm -f *.zip
 
 package:
 	cd .. && rm -f *.zip && zip -r raster_transparency.zip raster_transparency -x \*.pyc \*.ts \*.ui \*.qrc \*.pro \*~ \*.git\* \*Makefile*

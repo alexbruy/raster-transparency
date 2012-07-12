@@ -33,7 +33,7 @@ from qgis.gui import *
 
 from rastertransparencydockwidget import *
 
-from __init__ import mVersion
+from __init__ import version as pluginVersion
 
 import resources_rc
 
@@ -154,9 +154,14 @@ class RasterTransparencyPlugin( object ):
       self.dockWidget.disableOrEnableControls( False )
       return
 
-    if self.layer.providerType() != "gdal":
-      self.dockWidget.disableOrEnableControls( False )
-      return
+    if hasattr( self.layer, "providerType" ):
+      if self.layer.providerType() != "gdal":
+        self.dockWidget.disableOrEnableControls( False )
+        return
+    else:
+      if self.layer.providerKey() != "gdal":
+        self.dockWidget.disableOrEnableControls( False )
+        return
 
     # also disable it for multiband layers that not in single band style
     if self.layer.bandCount() > 1 and self.layer.drawingStyle() not in singleBandStyles:
@@ -178,7 +183,7 @@ class RasterTransparencyPlugin( object ):
     title = QLabel( QApplication.translate( "RasterTransparency", "<b>Raster Transparency</b>" ) )
     title.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
     lines.addWidget( title )
-    version = QLabel( QApplication.translate( "RasterTransparency", "Version: %1" ).arg( mVersion ) )
+    version = QLabel( QApplication.translate( "RasterTransparency", "Version: %1" ).arg( pluginVersion() ) )
     version.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
     lines.addWidget( version )
     lines.addWidget( QLabel( QApplication.translate( "RasterTransparency", "Change raster transparency interactively" ) ) )
