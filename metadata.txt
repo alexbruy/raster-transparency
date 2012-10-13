@@ -5,9 +5,10 @@ category = Raster
 version = 0.1.15
 qgisMinimumVersion = 1.5.0
 
-icon = icons/rastertransparency.png
+author = Alexander Bruy (NextGIS)
+email = alexander.bruy@gmail.com
 
-authorName = Alexander Bruy (NextGIS)
+icon = icons/rastertransparency.png
 
 tags = raster, transparency
 
