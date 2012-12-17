@@ -155,11 +155,11 @@ class RasterTransparencyPlugin( object ):
       return
 
     if hasattr( self.layer, "providerType" ):
-      if self.layer.providerType() != "gdal":
+      if self.layer.providerType() not in ["gdal", "grass"]:
         self.dockWidget.disableOrEnableControls( False )
         return
     else:
-      if self.layer.providerKey() != "gdal":
+      if self.layer.providerKey() not in ["gdal", "grass"]:
         self.dockWidget.disableOrEnableControls( False )
         return
 
