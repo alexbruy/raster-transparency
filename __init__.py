@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Interactively setup raster transparency
 #
-# Copyright (C) 2010 Alexander Bruy (alexander.bruy@gmail.com)
+# Copyright (C) 2010-2013 Alexander Bruy (alexander.bruy@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -25,30 +25,39 @@
 #
 #******************************************************************************
 
+
 def name():
-  return "Raster Transparency"
+    return "Raster Transparency"
+
 
 def description():
-  return "Change raster transparency interactively"
+    return "Change raster transparency interactively"
+
 
 def category():
-  return "Raster"
+    return "Raster"
+
 
 def version():
-  return "0.1.15"
+    return "0.1.15"
+
 
 def qgisMinimumVersion():
-  return "1.5"
+    return "1.5"
+
 
 def author():
-  return "Alexander Bruy"
+    return "Alexander Bruy"
+
 
 def email():
-  return "alexander.bruy@gmail.com"
+    return "alexander.bruy@gmail.com"
+
 
 def icon():
-  return "icons/rastertransparency.png"
+    return "icons/rastertransparency.png"
 
-def classFactory( iface ):
-  from rastertransparency import RasterTransparencyPlugin
-  return RasterTransparencyPlugin( iface )
+
+def classFactory(iface):
+    from rastertransparency import RasterTransparencyPlugin
+    return RasterTransparencyPlugin(iface)
