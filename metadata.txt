@@ -2,19 +2,19 @@
 name=Raster Transparency
 description=Change raster transparency interactively
 category=Raster
-version=0.1.15
+version=1.0.0
 qgisMinimumVersion=2.0
 
-author=Alexander Bruy (NextGIS)
+author=Alexander Bruy
 email=alexander.bruy@gmail.com
 
 icon=icons/rastertransparency.png
 
 tags=raster, transparency
 
-homepage=http://gis-lab.info/qa/raster-transparency.html
-tracker=http://hub.qgis.org/projects/raster-transparency
-repository=http://svn.gis-lab.info/raster_transparency
+homepage=http://hub.qgis.org/projects/raster-transparency/wiki
+tracker=http://hub.qgis.org/projects/raster-transparency/issues
+repository=https://github.com/alexbruy/raster-transparency
 
 experimental=False
 deprecated=False
