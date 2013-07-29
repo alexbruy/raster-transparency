@@ -4,7 +4,7 @@ SOURCES = __init__.py \
           aboutdialog.py
 
 FORMS = ui/rastertransparencydockwidgetbase.ui \
-        ui/aboutdialogbase.py
+        ui/aboutdialogbase.ui
 
 TRANSLATIONS = i18n/rastertransparency_ru.ts \
                i18n/rastertransparency_uk.ts
