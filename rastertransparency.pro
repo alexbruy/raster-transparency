@@ -6,5 +6,5 @@ SOURCES = __init__.py \
 FORMS = ui/rastertransparencydockwidgetbase.ui \
         ui/aboutdialogbase.py
 
-TRANSLATIONS = i18n/rastertransparency_ru_RU.ts \
-               i18n/rastertransparency_uk_UA.ts
+TRANSLATIONS = i18n/rastertransparency_ru.ts \
+               i18n/rastertransparency_uk.ts
