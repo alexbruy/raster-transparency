@@ -32,7 +32,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from ui_rastertransparencydockwidgetbase import Ui_RasterTransparencyDockWidget
+from ui.ui_rastertransparencydockwidgetbase import Ui_RasterTransparencyDockWidget
 
 
 class RasterTransparencyDockWidget(QDockWidget, Ui_RasterTransparencyDockWidget, object):
