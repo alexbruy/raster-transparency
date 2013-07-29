@@ -46,16 +46,16 @@ class RasterTransparencyDockWidget(QDockWidget, Ui_RasterTransparencyDockWidget,
         self.minVal = 0
 
         # connect signals and slots
-        QObject.connect(self.chkManualUpdate, SIGNAL("stateChanged(int)"), self.__toggleRefresh)
-        QObject.connect(self.btnRefresh, SIGNAL("clicked()"), self.updateRasterTransparency)
+        self.chkManualUpdate.stateChanged.connect(self.__toggleRefresh)
+        self.btnRefresh.clicked.connect(self.updateRasterTransparency)
 
-        QObject.connect(self.sliderStart, SIGNAL("valueChanged(int)"), self.__updateSpinStart)
-        QObject.connect(self.spinStart, SIGNAL("valueChanged(int)"), self.__updateSliderStart)
-        QObject.connect(self.sliderEnd, SIGNAL("valueChanged(int)"), self.__updateSpinEnd)
-        QObject.connect(self.spinEnd, SIGNAL("valueChanged(int)"), self.__updateSliderEnd)
+        self.sliderStart.valueChanged.connect(self.__updateSpinStart)
+        self.spinStart.valueChanged.connect(self.__updateSliderStart)
+        self.sliderEnd.valueChanged.connect(self.__updateSpinEnd)
+        self.spinEnd.valueChanged.connect(self.__updateSliderEnd)
 
-        settings = QSettings("NextGIS", "RasterTransparency")
-        self.chkManualUpdate.setChecked(settings.value("manualUpdate", False).toBool())
+        settings = QSettings("alexbruy", "RasterTransparency")
+        self.chkManualUpdate.setChecked(bool(settings.value("manualUpdate", False)))
 
     def updateRasterTransparency(self):
         transparencyList = []
@@ -69,7 +69,7 @@ class RasterTransparencyDockWidget(QDockWidget, Ui_RasterTransparencyDockWidget,
         # update layer transparency
         layer = self.plugin.iface.mapCanvas().currentLayer()
         layer.setCacheImage(None)
-        layer.rasterTransparency().setTransparentSingleValuePixelList(transparencyList)
+        layer.renderer().rasterTransparency().setTransparentSingleValuePixelList(transparencyList)
         self.plugin.iface.mapCanvas().refresh()
 
     def __updateSpinStart(self, value):
@@ -111,17 +111,20 @@ class RasterTransparencyDockWidget(QDockWidget, Ui_RasterTransparencyDockWidget,
         self.sliderEnd.setValue(value)
 
     def __toggleRefresh(self):
-        settings = QSettings("NextGIS", "RasterTransparency")
+        settings = QSettings("alexbruy", "RasterTransparency")
         settings.setValue("manualUpdate", self.chkManualUpdate.isChecked())
 
         if self.chkManualUpdate.isChecked():
             self.btnRefresh.setEnabled(True)
-            QObject.disconnect(self.sliderStart, SIGNAL("sliderReleased ()"), self.updateRasterTransparency)
-            QObject.disconnect(self.sliderEnd, SIGNAL("sliderReleased ()"), self.updateRasterTransparency)
+            try:
+                self.sliderStart.sliderReleased.disconnect(self.updateRasterTransparency)
+                self.sliderEnd.sliderReleased.disconnect(self.updateRasterTransparency)
+            except:
+                pass
         else:
             self.btnRefresh.setEnabled(False)
-            QObject.connect(self.sliderStart, SIGNAL("sliderReleased ()"), self.updateRasterTransparency)
-            QObject.connect(self.sliderEnd, SIGNAL("sliderReleased ()"), self.updateRasterTransparency)
+            self.sliderStart.sliderReleased.connect(self.updateRasterTransparency)
+            self.sliderEnd.sliderReleased.connect(self.updateRasterTransparency)
 
     def disableOrEnableControls(self, disable):
         self.label.setEnabled(disable)
@@ -153,9 +156,9 @@ class RasterTransparencyDockWidget(QDockWidget, Ui_RasterTransparencyDockWidget,
 
     def generateTransparencyList(self, minVal, maxVal):
         trList = []
-        for v in range(int(minVal), int(maxVal + 1)):
-            tr = QgsRasterTransparency.TransparentSingleValuePixel()
-            tr.pixelValue = v
-            tr.percentTransparent = 100
-            trList.append(tr)
+        tr = QgsRasterTransparency.TransparentSingleValuePixel()
+        tr.min = minVal
+        tr.max = maxVal
+        tr.percentTransparent = 100
+        trList.append(tr)
         return trList

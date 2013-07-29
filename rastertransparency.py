@@ -26,6 +26,9 @@
 #******************************************************************************
 
 
+import os
+import ConfigParser
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -34,18 +37,15 @@ from qgis.gui import *
 
 from rastertransparencydockwidget import *
 
-from __init__ import version as pluginVersion
-
 import resources_rc
 
-singleBandStyles = [QgsRasterLayer.SingleBandGray, QgsRasterLayer.SingleBandPseudoColor,
-                     QgsRasterLayer.PalettedColor, QgsRasterLayer.PalettedSingleBandGray,
-                     QgsRasterLayer.PalettedSingleBandPseudoColor,
-                     QgsRasterLayer.MultiBandSingleBandGray,
-                     QgsRasterLayer.MultiBandSingleBandPseudoColor]
-
-
 class RasterTransparencyPlugin(object):
+
+    singleBandStyles = ["paletted",
+                        "singlebandgray",
+                        "singlebandpseudocolor"
+                       ]
+
     def __init__(self, iface):
         self.iface = iface
         self.canvas = self.iface.mapCanvas()
@@ -53,20 +53,16 @@ class RasterTransparencyPlugin(object):
         self.layer = None
         self.toolBar = None
 
-        try:
-            self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
-        except:
-            self.QgisVersion = unicode(QGis.qgisVersion)[0]
+        self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
 
-        # For i18n support
         userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/raster_transparency"
         systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/raster_transparency"
 
-        overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
         if not overrideLocale:
             localeFullName = QLocale.system().name()
         else:
-            localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+            localeFullName = QSettings().value("locale/userLocale", "")
 
         if QFileInfo(userPluginPath).exists():
             translationPath = userPluginPath + "/i18n/rastertransparency_" + localeFullName + ".qm"
@@ -80,61 +76,46 @@ class RasterTransparencyPlugin(object):
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
-        if int(self.QgisVersion) < 10500:
-            QMessageBox.warning(self.iface.mainWindow(), "RasterTransparency",
-                                 QCoreApplication.translate("RasterTransparency", "Quantum GIS version detected: %1.%2\n").arg(self.QgisVersion[0]).arg(self.QgisVersion[2]) +
-                                 QCoreApplication.translate("RasterTransparency", "This version of Raster Transparency requires at least QGIS version 1.5.0\nPlugin will not be enabled."))
+        if int(self.qgsVersion) < 10900:
+            qgisVersion = self.qgsVersion[0] + "." + self.qgsVersion[2] + "." + self.qgsVersion[3]
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "RasterTransparency",
+                                QCoreApplication.translate("RasterTransparency", "QGIS version detected: ") + qgisVersion +
+                                QCoreApplication.translate("RasterTransparency", "This version of Raster Transparency requires at least QGIS version 2.0.\nPlugin will not be enabled."))
             return None
 
         self.dockWidget = None
 
-        # create action for plugin dockable window (show/hide)
         self.actionDock = QAction(QIcon(":/icons/rastertransparency.png"), "RasterTransparency", self.iface.mainWindow())
         self.actionDock.setStatusTip(QCoreApplication.translate("RasterTransparency", "Show/hide RasterTransparency dockwidget"))
         self.actionDock.setWhatsThis(QCoreApplication.translate("RasterTransparency", "Show/hide RasterTransparency dockwidget"))
         self.actionDock.setCheckable(True)
 
-        # create action for display plugin about dialog
         self.actionAbout = QAction(QIcon(":/icons/about.png"), "About", self.iface.mainWindow())
         self.actionAbout.setStatusTip(QCoreApplication.translate("RasterTransparency", "About Raster Transparency"))
         self.actionAbout.setWhatsThis(QCoreApplication.translate("RasterTransparency", "About Raster Transparency"))
 
-        # connect actions to plugin functions
-        QObject.connect(self.actionDock, SIGNAL("triggered()"), self.showHideDockWidget)
-        QObject.connect(self.actionAbout, SIGNAL("triggered()"), self.about)
+        self.actionDock.triggered.connect(self.showHideDockWidget)
+        self.actionAbout.triggered.connect(self.about)
 
-        # add button to the Raster toolbar
-        if hasattr(self.iface, "addPluginToRasterMenu"):
-            self.iface.addRasterToolBarIcon(self.actionDock)
-            self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
-            self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
-        else:
-            self.iface.addToolBarIcon(self.actionDock)
-            self.iface.addPluginToMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
-            self.iface.addPluginToMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
+        self.iface.addRasterToolBarIcon(self.actionDock)
+        self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
+        self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
 
-        # create dockwidget
         self.dockWidget = RasterTransparencyDockWidget(self)
         self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockWidget)
-        QObject.connect(self.dockWidget, SIGNAL("visibilityChanged(bool)"), self.__dockVisibilityChanged)
+        self.dockWidget.visibilityChanged.connect(self.__dockVisibilityChanged)
 
-        # track layer changing
-        QObject.connect(self.iface, SIGNAL("currentLayerChanged(QgsMapLayer*)"), self.layerChanged)
+        self.iface.currentLayerChanged.connect(self.layerChanged)
         self.layerChanged()
 
     def unload(self):
-        QObject.disconnect(self.iface, SIGNAL("currentLayerChanged(QgsMapLayer*)"), self.layerChanged)
+        self.iface.currentLayerChanged.disconnect(self.layerChanged)
 
-        if hasattr(self.iface, "addPluginToRasterMenu"):
-            self.iface.removeRasterToolBarIcon(self.actionDock)
-            self.iface.removePluginRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
-            self.iface.removePluginRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
-        else:
-            self.iface.removeToolBarIcon(self.actionDock)
-            self.iface.removePluginMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
-            self.iface.removePluginMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
+        self.iface.removeRasterToolBarIcon(self.actionDock)
+        self.iface.removePluginRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
+        self.iface.removePluginRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
 
-        # remove dock widget
         self.dockWidget.close()
         del self.dockWidget
         self.dockWidget = None
@@ -151,27 +132,20 @@ class RasterTransparencyPlugin(object):
         if self.layer is None:
             return
 
-        # disable plugin for vector layers
         if self.layer.type() != QgsMapLayer.RasterLayer:
             self.dockWidget.disableOrEnableControls(False)
             return
 
-        if hasattr(self.layer, "providerType"):
-            if self.layer.providerType() not in ["gdal", "grass"]:
-                self.dockWidget.disableOrEnableControls(False)
-                return
-        else:
-            if self.layer.providerKey() not in ["gdal", "grass"]:
-                self.dockWidget.disableOrEnableControls(False)
-                return
-
-        # also disable it for multiband layers that not in single band style
-        if self.layer.bandCount() > 1 and self.layer.drawingStyle() not in singleBandStyles:
+        if self.layer.providerType() not in ["gdal", "grass"]:
             self.dockWidget.disableOrEnableControls(False)
             return
 
-        # get maximum value from raster statistics
-        stat = self.layer.bandStatistics(self.layer.grayBandName())
+        if self.layer.bandCount() > 1 and self.layer.renderer().type() not in self.singleBandStyles:
+            self.dockWidget.disableOrEnableControls(False)
+            return
+
+        band = self.layer.renderer().usesBands()[0]
+        stat = self.layer.dataProvider().bandStatistics(band)
         maxValue = int(stat.maximumValue)
         minValue = int(stat.minimumValue)
         self.dockWidget.updateSliders(maxValue, minValue)
@@ -185,20 +159,24 @@ class RasterTransparencyPlugin(object):
         title = QLabel(QApplication.translate("RasterTransparency", "<b>Raster Transparency</b>"))
         title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         lines.addWidget(title)
-        version = QLabel(QApplication.translate("RasterTransparency", "Version: %1").arg(pluginVersion()))
+
+        cfg = ConfigParser.SafeConfigParser()
+        cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
+        version = cfg.get("general", "version")
+
+        version = QLabel(QApplication.translate("RasterTransparency", "Version: %s") % (version))
         version.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         lines.addWidget(version)
         lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "Change raster transparency interactively")))
         lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "<b>Developers:</b>")))
         lines.addWidget(QLabel("  Alexander Bruy"))
-        lines.addWidget(QLabel("  Maxim Dubinin"))
         lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "<b>Homepage:</b>")))
 
-        overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
         if not overrideLocale:
             localeFullName = QLocale.system().name()
         else:
-            localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+            localeFullName = QSettings().value("locale/userLocale", "")
 
         localeShortName = localeFullName[0:2]
         if localeShortName in ["ru", "uk"]:
@@ -211,7 +189,7 @@ class RasterTransparencyPlugin(object):
 
         btnClose = QPushButton(QApplication.translate("RasterTransparency", "Close"))
         lines.addWidget(btnClose)
-        QObject.connect(btnClose, SIGNAL("clicked()"), dlgAbout, SLOT("close()"))
+        btnClose.clicked.connect(dlgAbout.close())
 
         dlgAbout.exec_()
 

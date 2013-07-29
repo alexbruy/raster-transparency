@@ -26,38 +26,6 @@
 #******************************************************************************
 
 
-def name():
-    return "Raster Transparency"
-
-
-def description():
-    return "Change raster transparency interactively"
-
-
-def category():
-    return "Raster"
-
-
-def version():
-    return "0.1.15"
-
-
-def qgisMinimumVersion():
-    return "1.5"
-
-
-def author():
-    return "Alexander Bruy"
-
-
-def email():
-    return "alexander.bruy@gmail.com"
-
-
-def icon():
-    return "icons/rastertransparency.png"
-
-
 def classFactory(iface):
     from rastertransparency import RasterTransparencyPlugin
     return RasterTransparencyPlugin(iface)
