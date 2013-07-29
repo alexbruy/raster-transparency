@@ -35,7 +35,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from rastertransparencydockwidget import *
+import rastertransparencydockwidget
+import aboutdialog
 
 import resources_rc
 
@@ -102,7 +103,7 @@ class RasterTransparencyPlugin(object):
         self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionDock)
         self.iface.addPluginToRasterMenu(QCoreApplication.translate("RasterTransparency", "Raster transparency"), self.actionAbout)
 
-        self.dockWidget = RasterTransparencyDockWidget(self)
+        self.dockWidget = rastertransparencydockwidget.RasterTransparencyDockWidget(self)
         self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockWidget)
         self.dockWidget.visibilityChanged.connect(self.__dockVisibilityChanged)
 
@@ -153,45 +154,8 @@ class RasterTransparencyPlugin(object):
         self.dockWidget.disableOrEnableControls(True)
 
     def about(self):
-        dlgAbout = QDialog()
-        dlgAbout.setWindowTitle(QApplication.translate("RasterTransparency", "About Raster Transparency", "Window title"))
-        lines = QVBoxLayout(dlgAbout)
-        title = QLabel(QApplication.translate("RasterTransparency", "<b>Raster Transparency</b>"))
-        title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        lines.addWidget(title)
-
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
-        version = cfg.get("general", "version")
-
-        version = QLabel(QApplication.translate("RasterTransparency", "Version: %s") % (version))
-        version.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        lines.addWidget(version)
-        lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "Change raster transparency interactively")))
-        lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "<b>Developers:</b>")))
-        lines.addWidget(QLabel("  Alexander Bruy"))
-        lines.addWidget(QLabel(QApplication.translate("RasterTransparency", "<b>Homepage:</b>")))
-
-        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
-        if not overrideLocale:
-            localeFullName = QLocale.system().name()
-        else:
-            localeFullName = QSettings().value("locale/userLocale", "")
-
-        localeShortName = localeFullName[0:2]
-        if localeShortName in ["ru", "uk"]:
-            link = QLabel("<a href=\"http://gis-lab.info/qa/raster-transparency.html\">http://gis-lab.info/qa/raster-transparency.html</a>")
-        else:
-            link = QLabel("<a href=\"http://gis-lab.info/qa/raster-transparency.html\">http://gis-lab.info/qa/raster-transparency.html</a>")
-
-        link.setOpenExternalLinks(True)
-        lines.addWidget(link)
-
-        btnClose = QPushButton(QApplication.translate("RasterTransparency", "Close"))
-        lines.addWidget(btnClose)
-        btnClose.clicked.connect(dlgAbout.close())
-
-        dlgAbout.exec_()
+        d = aboutdialog.AboutDialog()
+        d.exec_()
 
     def __dockVisibilityChanged(self):
         if self.dockWidget.isVisible():
