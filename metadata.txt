@@ -1,6 +1,7 @@
 [general]
 name=Raster Transparency
 description=Change raster transparency interactively
+about=Adjust transparency of the single-band rasters interactively
 category=Raster
 version=1.0.0
 qgisMinimumVersion=3.0
@@ -10,11 +11,11 @@ email=alexander.bruy@gmail.com
 
 icon=icons/rastertransparency.png
 
-tags=raster, transparency
+tags=raster,transparency
 
-homepage=http://hub.qgis.org/projects/raster-transparency/wiki
-tracker=http://hub.qgis.org/projects/raster-transparency/issues
-repository=https://github.com/alexbruy/raster-transparency
+homepage=https://github.com/alexbruy/rastertransparency
+tracker=https://github.com/alexbruy/rastertransparency/issues
+repository=https://github.com/alexbruy/rastertransparency
 
 experimental=False
 deprecated=False
