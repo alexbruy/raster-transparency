@@ -3,7 +3,7 @@ name=Raster Transparency
 description=Change raster transparency interactively
 category=Raster
 version=1.0.0
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 
 author=Alexander Bruy
 email=alexander.bruy@gmail.com
