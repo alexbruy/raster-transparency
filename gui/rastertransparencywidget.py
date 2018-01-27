@@ -28,20 +28,44 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import QgsSettings, QgsRasterTransparency
+from qgis.gui import QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget
+from qgis.core import QgsMapLayer
 from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "rastertransparencywidgetbase.ui"))
 
 
-class RasterTransparencyWidget(BASE, WIDGET):
-    def __init__(self, parent=None):
-        super(RasterTransparencyWidget, self).__init__(parent)
+class TransparencyPanelFactory(QgsMapLayerConfigWidgetFactory):
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, "icons", "rastertransparency.png"))
+
+    def title(self):
+        return self.tr("Raster Transparency")
+
+    def supportsStyleDock(self):
+        return True
+
+    def supportsLayer(self, layer):
+        return layer.type() == QgsMapLayer.RasterLayer
+
+    def createWidget(self, layer, canvas, dockMode, parent):
+        return RasterTransparencyWidget(layer, canvas, parent)
+
+    def tr(self, text):
+        return QCoreApplication.translate("TransparencyPanelFactory", text)
+
+
+class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
+    def __init__(self, layer, canvas, parent=None):
+        super(RasterTransparencyWidget, self).__init__(layer, canvas, parent)
         self.setupUi(self)
 
-        self.stackedWidget.setCurrentIndex(0)
+    def syncToLayer(self):
+        pass
 
-    def setLayer(self, layer):
+    def apply(self):
         pass
