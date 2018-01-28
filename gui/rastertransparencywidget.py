@@ -76,6 +76,9 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
         self.sliderValues.lowerValueChanged.connect(self.spnLower.setValue)
         self.sliderValues.upperValueChanged.connect(self.spnUpper.setValue)
 
+        self.spnLower.valueChanged.connect(self.widgetChanged.emit)
+        self.spnUpper.valueChanged.connect(self.widgetChanged.emit)
+
         self.syncToLayer()
 
     def syncToLayer(self):
