@@ -1,10 +1,10 @@
 SOURCES = __init__.py \
-          rastertransparency.py \
-          rastertransparencydockwidget.py \
-          aboutdialog.py
+          rastertransparencyplugin.py \
+          gui/aboutdialog.py \
+          gui/qrangeslider.py \
+          gui/rastertransparencywidget.py
 
-FORMS = ui/rastertransparencydockwidgetbase.ui \
+FORMS = ui/rastertransparencywidgetbase.ui \
         ui/aboutdialogbase.ui
 
-TRANSLATIONS = i18n/rastertransparency_ru.ts \
-               i18n/rastertransparency_uk.ts
+TRANSLATIONS = i18n/rastertransparency_uk.ts
