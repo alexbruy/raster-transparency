@@ -41,7 +41,7 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "rastertransparency
 
 class TransparencyPanelFactory(QgsMapLayerConfigWidgetFactory):
     def icon(self):
-        return QIcon(os.path.join(pluginPath, "icons", "rastertransparency.png"))
+        return QIcon(os.path.join(pluginPath, "icons", "rastertransparency.svg"))
 
     def title(self):
         return self.tr("Raster Transparency")

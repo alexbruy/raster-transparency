@@ -51,7 +51,7 @@ class AboutDialog(BASE, WIDGET):
         version = cfg["general"]["version"]
 
         self.lblLogo.setPixmap(
-            QPixmap(os.path.join(pluginPath, "icons", "rastertransparency.png")))
+            QPixmap(os.path.join(pluginPath, "icons", "rastertransparency.svg")))
         self.lblVersion.setText(self.tr("Version: {}".format(version)))
 
         doc = QTextDocument()
