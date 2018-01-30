@@ -67,7 +67,7 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
         self.layer = layer
         self.canvas = canvas
 
-        self.statistics = None
+        self.stats = None
         self.pixelList = None
 
         self.spnLower.valueChanged.connect(self.sliderValues.setLower)
@@ -83,20 +83,22 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
 
     def syncToLayer(self):
         band = self.layer.renderer().usesBands()[0]
-        self.statistics = self.layer.dataProvider().bandStatistics(band, QgsRasterBandStats.Min | QgsRasterBandStats.Max)
+        self.stats = self.layer.dataProvider().bandStatistics(band, QgsRasterBandStats.Min | QgsRasterBandStats.Max)
 
-        self.spnLower.setRange(int(self.statistics.minimumValue), int(self.statistics.maximumValue))
-        self.spnUpper.setRange(int(self.statistics.minimumValue), int(self.statistics.maximumValue))
-        self.sliderValues.setRange(int(self.statistics.minimumValue), int(self.statistics.maximumValue))
+        self.spnLower.setRange(int(self.stats.minimumValue), int(self.stats.maximumValue))
+        self.spnUpper.setRange(int(self.stats.minimumValue), int(self.stats.maximumValue))
+        self.sliderValues.setRange(int(self.stats.minimumValue), int(self.stats.maximumValue))
 
         # adjust controls to current transparency
         self.pixelList = self.layer.renderer().rasterTransparency().transparentSingleValuePixelList()
         if len(self.pixelList) == 0:
-            self.spnLower.setValue(int(self.statistics.minimumValue))
-            self.spnUpper.setValue(int(self.statistics.maximumValue))
-            self.sliderValues.setInterval(int(self.statistics.minimumValue), int(self.statistics.maximumValue))
+            self.spnLower.setValue(int(self.stats.minimumValue))
+            self.spnUpper.setValue(int(self.stats.maximumValue))
+            self.sliderValues.setInterval(int(self.stats.minimumValue), int(self.stats.maximumValue))
         elif len(self.pixelList) == 1:
-            self.spnLower.setValue(int(self.pixelList[0].max))
+            minV, maxV = self._findInterval(self.pixelList[0])
+            self.spnLower.setValue(minV)
+            self.spnUpper.setValue(maxV)
         elif len(self.pixelList) == 2:
             self.spnLower.setValue(int(self.pixelList[0].max))
             self.spnUpper.setValue(int(self.pixelList[1].min))
@@ -108,25 +110,27 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
 
     def apply(self):
         pixels = []
-        if self.spnLower.value() != int(self.statistics.minimumValue):
+        if self.spnLower.value() != int(self.stats.minimumValue):
             transparentPixel = QgsRasterTransparency.TransparentSingleValuePixel()
-            transparentPixel.min = self.statistics.minimumValue
+            transparentPixel.min = self.stats.minimumValue
             transparentPixel.max = self.spnLower.value()
             transparentPixel.percentTransparent = 100
             pixels.append(transparentPixel)
 
-        if self.spnUpper.value() != int(self.statistics.maximumValue):
+        if self.spnUpper.value() != int(self.stats.maximumValue):
             transparentPixel = QgsRasterTransparency.TransparentSingleValuePixel()
             transparentPixel.min = self.spnUpper.value()
-            transparentPixel.max = self.statistics.maximumValue
+            transparentPixel.max = self.stats.maximumValue
             transparentPixel.percentTransparent = 100
             pixels.append(transparentPixel)
 
-        if len(pixels) == 0:
-            return
-
         renderer = self.layer.renderer()
         rasterTransparency = QgsRasterTransparency()
+
+        if len(pixels) == 0:
+            rasterTransparency.setTransparentSingleValuePixelList(pixels)
+            renderer.setRasterTransparency(rasterTransparency)
+            return
 
         if len(self.pixelList) <= 2:
             rasterTransparency.setTransparentSingleValuePixelList(pixels)
@@ -136,3 +140,24 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
             rasterTransparency.setTransparentSingleValuePixelList(self.pixelList)
 
         renderer.setRasterTransparency(rasterTransparency)
+
+    def _findInterval(self, pixel):
+        minValue = 0
+        maxValue = 0
+        # first item is min - lower range
+        if int(pixel.min) == int(self.stats.minimumValue):
+            minValue = int(pixel.max)
+            maxValue = int(self.stats.maximumValue)
+        # first item is upper - max range
+        elif int(pixel.max) == int(self.stats.maximumValue):
+            minValue = int(self.stats.minimumValue)
+            maxValue = int(pixel.min)
+        else:
+            minValue = int(self.stats.minimumValue)
+            maxValue = int(self.stats.maximumValue)
+            QgsMessageLog.logMessage(self.tr("Transparency interval '{} to {}' "
+                                             "does not fit into plugin scheme. "
+                                             "Ignoring it.".format(pixel.min, pixel.max)),
+                                     self.tr("Raster transparency"))
+
+        return minValue, maxValue
