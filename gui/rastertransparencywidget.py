@@ -147,15 +147,16 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
     def _findInterval(self, pixel):
         minValue = 0
         maxValue = 0
-        # first item is min - lower range
         if int(pixel.min) == int(self.stats.minimumValue):
+            # min - lower range
             minValue = int(pixel.max)
             maxValue = int(self.stats.maximumValue)
-        # first item is upper - max range
         elif int(pixel.max) == int(self.stats.maximumValue):
+            # upper - max range
             minValue = int(self.stats.minimumValue)
             maxValue = int(pixel.min)
         else:
+            # unsupported range, use raster's min and max
             minValue = int(self.stats.minimumValue)
             maxValue = int(self.stats.maximumValue)
             QgsMessageLog.logMessage(self.tr("Transparency interval '{} to {}' "
