@@ -25,7 +25,7 @@ __copyright__ = '(C) 2011-2018, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from rastertransparency.rastertransparencyplugin import RasterTransparencyPlugin
+from raster_transparency.rastertransparencyplugin import RasterTransparencyPlugin
 
 
 def classFactory(iface):

@@ -1,4 +1,4 @@
-PLUGIN_NAME=rastertransparency
+PLUGIN_NAME=raster_transparency
 
 LANG_PATH=i18n
 LANG_SOURCES=$(wildcard $(LANG_PATH)/*.ts)

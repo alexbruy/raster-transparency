@@ -33,8 +33,8 @@ from qgis.PyQt.QtWidgets import QAction
 
 from qgis.core import QgsApplication
 
-from rastertransparency.gui.rastertransparencywidget import TransparencyPanelFactory
-from rastertransparency.gui.aboutdialog import AboutDialog
+from raster_transparency.gui.rastertransparencywidget import TransparencyPanelFactory
+from raster_transparency.gui.aboutdialog import AboutDialog
 
 pluginPath = os.path.dirname(__file__)
 

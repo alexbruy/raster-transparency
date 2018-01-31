@@ -66,7 +66,7 @@
   <customwidget>
    <class>QRangeSlider</class>
    <extends>QSlider</extends>
-   <header>rastertransparency.gui.qrangeslider</header>
+   <header>raster_transparency.gui.qrangeslider</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
