@@ -31,7 +31,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.gui import QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget
+from qgis.gui import QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget, QgsSpinBox
 from qgis.core import QgsMapLayer, QgsRasterBandStats, QgsRasterTransparency, QgsMessageLog
 from qgis.utils import iface
 
@@ -69,6 +69,9 @@ class RasterTransparencyWidget(QgsMapLayerConfigWidget, WIDGET):
 
         self.stats = None
         self.pixelList = None
+
+        self.spnLower.setClearValueMode(QgsSpinBox.MinimumValue)
+        self.spnUpper.setClearValueMode(QgsSpinBox.MaximumValue)
 
         self.spnLower.valueChanged.connect(self.sliderValues.setLower)
         self.spnUpper.valueChanged.connect(self.sliderValues.setUpper)
